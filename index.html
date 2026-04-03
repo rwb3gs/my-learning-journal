@@ -1,0 +1,727 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Bin 的學習誌｜投資 × 退休生活</title>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;600;900&family=DM+Mono:ital@0;1&family=Cormorant+Garamond:ital,wght@0,300;0,600;1,300&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --ink: #1a1410;
+      --paper: #f5f0e8;
+      --cream: #ede7d9;
+      --gold: #c9a84c;
+      --gold-light: #e8d4a0;
+      --rust: #b85c38;
+      --forest: #3d5a47;
+      --muted: #7a6e62;
+      --rule: #d4c9b8;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--paper);
+      color: var(--ink);
+      font-family: 'Noto Serif TC', serif;
+      overflow-x: hidden;
+    }
+
+    /* ── GRAIN OVERLAY ── */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 1000;
+      opacity: 0.4;
+    }
+
+    /* ── HEADER ── */
+    header {
+      position: relative;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 4rem 6vw;
+      border-bottom: 1px solid var(--rule);
+      overflow: hidden;
+    }
+
+    .header-bg {
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 80% 60% at 80% 50%, rgba(201,168,76,0.08) 0%, transparent 70%),
+        radial-gradient(ellipse 40% 80% at 10% 80%, rgba(61,90,71,0.06) 0%, transparent 60%);
+    }
+
+    .header-rule {
+      position: absolute;
+      top: 3rem; left: 6vw; right: 6vw;
+      height: 1px;
+      background: linear-gradient(90deg, var(--gold), transparent);
+      animation: fadeIn 1.2s ease both;
+    }
+
+    .header-number {
+      font-family: 'DM Mono', monospace;
+      font-size: clamp(8rem, 20vw, 18rem);
+      font-weight: 400;
+      color: transparent;
+      -webkit-text-stroke: 1px rgba(201,168,76,0.2);
+      position: absolute;
+      right: -2vw;
+      top: 50%;
+      transform: translateY(-50%);
+      line-height: 1;
+      pointer-events: none;
+      letter-spacing: -0.05em;
+    }
+
+    .header-tag {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.7rem;
+      letter-spacing: 0.25em;
+      color: var(--gold);
+      text-transform: uppercase;
+      opacity: 0;
+      animation: fadeUp 0.8s 0.2s ease forwards;
+    }
+
+    header h1 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(3rem, 8vw, 7rem);
+      font-weight: 300;
+      line-height: 1.05;
+      margin: 1.5rem 0 1rem;
+      opacity: 0;
+      animation: fadeUp 0.9s 0.4s ease forwards;
+    }
+
+    header h1 em {
+      font-style: italic;
+      color: var(--gold);
+    }
+
+    header h1 .sub {
+      display: block;
+      font-size: 0.45em;
+      font-weight: 600;
+      font-style: normal;
+      font-family: 'Noto Serif TC', serif;
+      color: var(--muted);
+      letter-spacing: 0.1em;
+      margin-top: 0.3em;
+    }
+
+    .header-desc {
+      max-width: 420px;
+      font-size: 0.95rem;
+      line-height: 2;
+      color: var(--muted);
+      opacity: 0;
+      animation: fadeUp 0.9s 0.6s ease forwards;
+    }
+
+    .header-stats {
+      display: flex;
+      gap: 3rem;
+      margin-top: 3rem;
+      opacity: 0;
+      animation: fadeUp 0.9s 0.8s ease forwards;
+    }
+
+    .stat {
+      display: flex;
+      flex-direction: column;
+      gap: 0.3rem;
+    }
+
+    .stat-num {
+      font-family: 'DM Mono', monospace;
+      font-size: 2rem;
+      color: var(--ink);
+      line-height: 1;
+    }
+
+    .stat-label {
+      font-size: 0.72rem;
+      letter-spacing: 0.15em;
+      color: var(--muted);
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(245,240,232,0.92);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--rule);
+      padding: 0 6vw;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 56px;
+    }
+
+    .nav-logo {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.75rem;
+      letter-spacing: 0.2em;
+      color: var(--gold);
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 2.5rem;
+      list-style: none;
+    }
+
+    .nav-links a {
+      font-size: 0.78rem;
+      letter-spacing: 0.12em;
+      color: var(--muted);
+      text-decoration: none;
+      transition: color 0.2s;
+      position: relative;
+    }
+
+    .nav-links a::after {
+      content: '';
+      position: absolute;
+      bottom: -2px; left: 0;
+      width: 0; height: 1px;
+      background: var(--gold);
+      transition: width 0.3s ease;
+    }
+
+    .nav-links a:hover { color: var(--ink); }
+    .nav-links a:hover::after { width: 100%; }
+
+    /* ── SECTIONS ── */
+    section {
+      padding: 6rem 6vw;
+      border-bottom: 1px solid var(--rule);
+    }
+
+    .section-header {
+      display: flex;
+      align-items: baseline;
+      gap: 1.5rem;
+      margin-bottom: 3.5rem;
+    }
+
+    .section-num {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.7rem;
+      color: var(--gold);
+      letter-spacing: 0.2em;
+    }
+
+    .section-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(2rem, 4vw, 3.2rem);
+      font-weight: 300;
+    }
+
+    .section-rule {
+      flex: 1;
+      height: 1px;
+      background: var(--rule);
+      margin-left: 1rem;
+    }
+
+    /* ── INVESTMENT CARDS ── */
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 1.5px;
+      background: var(--rule);
+      border: 1px solid var(--rule);
+    }
+
+    .card {
+      background: var(--paper);
+      padding: 2rem;
+      transition: background 0.3s;
+      cursor: default;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0;
+      width: 3px; height: 0;
+      background: var(--gold);
+      transition: height 0.4s ease;
+    }
+
+    .card:hover { background: var(--cream); }
+    .card:hover::before { height: 100%; }
+
+    .card-tag {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.65rem;
+      letter-spacing: 0.2em;
+      color: var(--gold);
+      margin-bottom: 0.8rem;
+      display: block;
+    }
+
+    .card-title {
+      font-size: 1.1rem;
+      font-weight: 600;
+      margin-bottom: 0.8rem;
+      line-height: 1.4;
+    }
+
+    .card-body {
+      font-size: 0.88rem;
+      line-height: 1.9;
+      color: var(--muted);
+    }
+
+    .card-meta {
+      margin-top: 1.5rem;
+      padding-top: 1rem;
+      border-top: 1px solid var(--rule);
+      font-family: 'DM Mono', monospace;
+      font-size: 0.65rem;
+      color: var(--muted);
+      letter-spacing: 0.1em;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    /* ── ETF TABLE ── */
+    .etf-table-wrap {
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.88rem;
+    }
+
+    thead tr {
+      border-bottom: 2px solid var(--gold);
+    }
+
+    thead th {
+      padding: 0.8rem 1.2rem;
+      text-align: left;
+      font-family: 'DM Mono', monospace;
+      font-size: 0.65rem;
+      letter-spacing: 0.2em;
+      color: var(--muted);
+      font-weight: 400;
+    }
+
+    tbody tr {
+      border-bottom: 1px solid var(--rule);
+      transition: background 0.2s;
+    }
+
+    tbody tr:hover { background: var(--cream); }
+
+    tbody td {
+      padding: 1rem 1.2rem;
+      line-height: 1.5;
+      color: var(--ink);
+    }
+
+    .tag-etf {
+      display: inline-block;
+      padding: 0.15rem 0.6rem;
+      font-family: 'DM Mono', monospace;
+      font-size: 0.68rem;
+      letter-spacing: 0.1em;
+      border-radius: 2px;
+    }
+
+    .tag-tw { background: rgba(61,90,71,0.1); color: var(--forest); }
+    .tag-us { background: rgba(184,92,56,0.1); color: var(--rust); }
+    .tag-bond { background: rgba(201,168,76,0.15); color: #8b6e1a; }
+
+    /* ── LIFE SECTION ── */
+    .life-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 3rem;
+    }
+
+    @media (max-width: 700px) {
+      .life-grid { grid-template-columns: 1fr; }
+      .header-stats { gap: 1.5rem; }
+      nav .nav-links { gap: 1.2rem; }
+    }
+
+    .life-block h3 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.6rem;
+      font-weight: 300;
+      margin-bottom: 1.5rem;
+      padding-bottom: 1rem;
+      border-bottom: 1px solid var(--rule);
+    }
+
+    .life-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .life-list li {
+      display: flex;
+      gap: 1rem;
+      align-items: flex-start;
+      font-size: 0.9rem;
+      line-height: 1.7;
+      color: var(--muted);
+    }
+
+    .life-list li .dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--gold);
+      flex-shrink: 0;
+      margin-top: 0.55em;
+    }
+
+    /* ── JOURNAL ── */
+    .journal-entry {
+      display: grid;
+      grid-template-columns: 120px 1fr;
+      gap: 2rem;
+      padding: 2rem 0;
+      border-bottom: 1px solid var(--rule);
+    }
+
+    .journal-entry:last-child { border-bottom: none; }
+
+    .journal-date {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.7rem;
+      color: var(--gold);
+      letter-spacing: 0.1em;
+      line-height: 1.8;
+    }
+
+    .journal-content h4 {
+      font-size: 1rem;
+      font-weight: 600;
+      margin-bottom: 0.6rem;
+    }
+
+    .journal-content p {
+      font-size: 0.88rem;
+      line-height: 1.9;
+      color: var(--muted);
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      padding: 3rem 6vw;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-family: 'DM Mono', monospace;
+      font-size: 0.68rem;
+      letter-spacing: 0.15em;
+      color: var(--muted);
+    }
+
+    /* ── ANIMATIONS ── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to   { opacity: 1; }
+    }
+
+    .reveal {
+      opacity: 0;
+      transform: translateY(24px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+
+    .reveal.visible {
+      opacity: 1;
+      transform: none;
+    }
+  </style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header>
+  <div class="header-bg"></div>
+  <div class="header-rule"></div>
+  <div class="header-number">B</div>
+
+  <span class="header-tag">Vol. 01 — 2026</span>
+  <h1>
+    <em>Bin</em> 的學習誌
+    <span class="sub">投資筆記 × 退休生活</span>
+  </h1>
+  <p class="header-desc">
+    記錄每一個思考的片刻——<br>
+    關於台股、ETF、家庭，<br>
+    以及退休後真正重要的事。
+  </p>
+  <div class="header-stats">
+    <div class="stat">
+      <span class="stat-num">54</span>
+      <span class="stat-label">歲．退休生活</span>
+    </div>
+    <div class="stat">
+      <span class="stat-num">4</span>
+      <span class="stat-label">個帳戶追蹤中</span>
+    </div>
+    <div class="stat">
+      <span class="stat-num">39+</span>
+      <span class="stat-label">持有標的</span>
+    </div>
+  </div>
+</header>
+
+<!-- NAV -->
+<nav>
+  <span class="nav-logo">BIN · LOG</span>
+  <ul class="nav-links">
+    <li><a href="#investment">投資筆記</a></li>
+    <li><a href="#etf">ETF 研究</a></li>
+    <li><a href="#life">退休生活</a></li>
+    <li><a href="#journal">日誌</a></li>
+  </ul>
+</nav>
+
+<!-- 投資筆記 -->
+<section id="investment">
+  <div class="section-header reveal">
+    <span class="section-num">01</span>
+    <h2 class="section-title">投資筆記</h2>
+    <div class="section-rule"></div>
+  </div>
+
+  <div class="cards-grid reveal">
+    <div class="card">
+      <span class="card-tag">HIGH DIVIDEND</span>
+      <div class="card-title">高息 ETF 的長期邏輯</div>
+      <div class="card-body">
+        高股息 ETF 適合退休族追求穩定現金流，但需注意配息來自資本利得時的風險。
+        選股時重視殖利率穩定性，而非單純追求高配息率。
+      </div>
+      <div class="card-meta">
+        <span>2026.04</span>
+        <span>ETF · 策略</span>
+      </div>
+    </div>
+
+    <div class="card">
+      <span class="card-tag">FAMILY DCA</span>
+      <div class="card-title">Wei & Kiki 的定期定額計畫</div>
+      <div class="card-body">
+        每月各 12,000 元，台灣 ETF 與美股/全球 ETF 各半。
+        時間是年輕人最大的資產，複利效果在 20 年後才真正展現。
+      </div>
+      <div class="card-meta">
+        <span>2026.03</span>
+        <span>家庭 · DCA</span>
+      </div>
+    </div>
+
+    <div class="card">
+      <span class="card-tag">PORTFOLIO</span>
+      <div class="card-title">四帳戶分工思維</div>
+      <div class="card-body">
+        Bin 主帳戶偏重高息 ETF 與金融股；
+        Wei、Kiki 帳戶以成長型配置為主。
+        不同年齡層應有不同的風險承受結構。
+      </div>
+      <div class="card-meta">
+        <span>2026.02</span>
+        <span>資產配置</span>
+      </div>
+    </div>
+
+    <div class="card">
+      <span class="card-tag">MARKET SENSE</span>
+      <div class="card-title">台股市場觀察</div>
+      <div class="card-body">
+        TAIEX 走勢與美股連動性日益提高。
+        半導體權重過重，分散布局債券 ETF
+        可降低整體波動，保護退休資產。
+      </div>
+      <div class="card-meta">
+        <span>2026.01</span>
+        <span>台股 · 觀察</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ETF 研究 -->
+<section id="etf">
+  <div class="section-header reveal">
+    <span class="section-num">02</span>
+    <h2 class="section-title">ETF 研究</h2>
+    <div class="section-rule"></div>
+  </div>
+
+  <div class="etf-table-wrap reveal">
+    <table>
+      <thead>
+        <tr>
+          <th>代號</th>
+          <th>名稱</th>
+          <th>類型</th>
+          <th>市場</th>
+          <th>備註</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>00878</strong></td>
+          <td>國泰永續高股息</td>
+          <td><span class="tag-etf tag-tw">台股</span></td>
+          <td>TWSE</td>
+          <td>主帳戶核心持股，每季配息</td>
+        </tr>
+        <tr>
+          <td><strong>00919</strong></td>
+          <td>群益台灣精選高息</td>
+          <td><span class="tag-etf tag-tw">台股</span></td>
+          <td>TWSE</td>
+          <td>高息型，注意配息來源</td>
+        </tr>
+        <tr>
+          <td><strong>009814</strong></td>
+          <td>富邦標普500</td>
+          <td><span class="tag-etf tag-us">美股</span></td>
+          <td>TPEX</td>
+          <td>Wei/Kiki S&P500 曝險首選</td>
+        </tr>
+        <tr>
+          <td><strong>00953B</strong></td>
+          <td>債券 ETF</td>
+          <td><span class="tag-etf tag-bond">債券</span></td>
+          <td>TWSE</td>
+          <td>降低整體波動，防禦配置</td>
+        </tr>
+        <tr>
+          <td><strong>00923</strong></td>
+          <td>台灣高息動能</td>
+          <td><span class="tag-etf tag-tw">台股</span></td>
+          <td>TWSE</td>
+          <td>年輕人長期持有需重新評估</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- 退休生活 -->
+<section id="life">
+  <div class="section-header reveal">
+    <span class="section-num">03</span>
+    <h2 class="section-title">退休生活</h2>
+    <div class="section-rule"></div>
+  </div>
+
+  <div class="life-grid reveal">
+    <div class="life-block">
+      <h3>日常節奏</h3>
+      <ul class="life-list">
+        <li><span class="dot"></span>每日追蹤四帳戶投資組合，10:30 / 14:30 / 18:30 自動更新</li>
+        <li><span class="dot"></span>閱讀財經新聞，關注台股與美股動態</li>
+        <li><span class="dot"></span>與 Ohy、Wei、Kiki 討論家庭財務規劃</li>
+        <li><span class="dot"></span>持續學習 Google Apps Script 自動化</li>
+        <li><span class="dot"></span>探索 AI 工具應用於投資分析</li>
+      </ul>
+    </div>
+
+    <div class="life-block">
+      <h3>興趣與探索</h3>
+      <ul class="life-list">
+        <li><span class="dot"></span>八字命理研究，為家人解讀流年運勢</li>
+        <li><span class="dot"></span>陪伴 Kiki 準備大學學習歷程檔案</li>
+        <li><span class="dot"></span>AI 虛擬偶像與音樂創作探索</li>
+        <li><span class="dot"></span>記錄退休後的學習心得與生活觀察</li>
+        <li><span class="dot"></span>台中在地生活，享受悠閒步調</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- 日誌 -->
+<section id="journal">
+  <div class="section-header reveal">
+    <span class="section-num">04</span>
+    <h2 class="section-title">近期日誌</h2>
+    <div class="section-rule"></div>
+  </div>
+
+  <div class="reveal">
+    <div class="journal-entry">
+      <div class="journal-date">2026<br>APR 03</div>
+      <div class="journal-content">
+        <h4>建立個人學習網頁</h4>
+        <p>用 VS Code 與 GitHub 建立這個網頁，記錄投資心得與退休生活。
+           學習 Git 操作，從 clone 到 push，一步一步完成。</p>
+      </div>
+    </div>
+
+    <div class="journal-entry">
+      <div class="journal-date">2026<br>MAR</div>
+      <div class="journal-content">
+        <h4>家庭投資組合健診</h4>
+        <p>重新檢視四帳戶配置，確認 Wei 與 Kiki 的定期定額方向正確。
+           建議長期投資者減少高息 ETF 比重，增加成長型配置。</p>
+      </div>
+    </div>
+
+    <div class="journal-entry">
+      <div class="journal-date">2026<br>FEB</div>
+      <div class="journal-content">
+        <h4>Google Apps Script 自動化完成</h4>
+        <p>完成每日快照、股價更新、除權息記錄、PDF 備份四大腳本。
+           投資追蹤系統正式上線，每天自動執行。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <span>BIN · 台中 · 2026</span>
+  <span>投資 × 家庭 × 退休生活</span>
+</footer>
+
+<script>
+  // Scroll reveal
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('visible');
+      }
+    });
+  }, { threshold: 0.1 });
+
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+</script>
+</body>
+</html>
